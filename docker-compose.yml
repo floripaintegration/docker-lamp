@@ -1,0 +1,26 @@
+version: '3'
+ 
+services:
+    apache:
+        container_name: ${COMPOSE_PROJECT_NAME}_apache
+        build:
+            context: ./apache
+        volumes:
+            - ${SPOTLOADER_DIR}:/home/spotloader/spotloader-globosat
+        ports:
+            - ${APACHE_EXPOSED_PORT}:80
+        network_mode: bridge
+        links:
+            - mysql
+    mysql:
+        image: mysql:5.7
+        container_name: ${COMPOSE_PROJECT_NAME}_mysql
+        restart: always
+        volumes:
+            - ../${COMPOSE_PROJECT_NAME}_database:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+        ports:
+            - ${MYSQL_EXPOSED_PORT}:3306
+        network_mode: bridge
